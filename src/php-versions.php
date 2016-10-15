@@ -20,10 +20,10 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package         GreenCape\PHPVersions
- * @author          Niels Braczek <nbraczek@bsds.de>
+ * @package     GreenCape\PHPVersions
+ * @author      Niels Braczek <nbraczek@bsds.de>
  * @copyright   (C) 2016 GreenCape, Niels Braczek <nbraczek@bsds.de>
- * @license         http://opensource.org/licenses/MIT The MIT license (MIT)
+ * @license     http://opensource.org/licenses/MIT The MIT license (MIT)
  */
 
 namespace Greencape;
@@ -34,7 +34,7 @@ namespace Greencape;
  * A utility class to provide a list of all PHP versions and their matching xDebug version.
  *
  * @package Greencape\PhpVersions
- * @version 1.0.0
+ * @version 1.0.1
  */
 class PhpVersions
 {
