@@ -2,7 +2,6 @@
 
 [![Code Climate](https://codeclimate.com/github/GreenCape/php-versions/badges/gpa.svg)](https://codeclimate.com/github/GreenCape/php-versions)
 [![Latest Stable Version](https://poser.pugx.org/greencape/php-versions/v/stable.png)](https://packagist.org/packages/greencape/php-versions)
-[![Build Status](https://api.travis-ci.org/GreenCape/php-versions.svg?branch=master)](https://travis-ci.org/greencape/php-versions)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
 > A utility class to provide a list of all PHP versions and their matching xDebug version.
@@ -178,7 +177,7 @@ See separate [API documentation](docs/API.md).
 ## Contribute
 
 PRs are welcome.
-If you encounter any bug or issues, please use the [issue tracker]().
+If you encounter any bug or issues, please use the [issue tracker](https://github.com/GreenCape/php-versions/issues).
 
 ## License
 
