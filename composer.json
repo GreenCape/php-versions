@@ -1,0 +1,26 @@
+{
+  "name": "greencape/php-versions",
+  "description": "A utility class to provide a list of all PHP versions and their matching xDebug version.",
+  "homepage": "https://github.com/GreenCape/php-versions",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Niels Braczek",
+      "email": "nbraczek@bsds.de",
+      "role": "lead"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/GreenCape/php-versions/issues"
+  },
+  "require": {
+    "php": ">=5.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Greencape\\": "src/"
+    }
+  },
+  "require-dev": {
+  }
+}
