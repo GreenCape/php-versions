@@ -87,15 +87,15 @@ class PhpVersions
 			{
 				$this->out("Looking for new releases", self::VERBOSITY_NORMAL);
 
-				$this->loadFromPhpSite(false);
+				$this->loadFromPhpSite(2);
 			}
-		}
-		else
-		{
-			$this->out("Fetching data from php.net", self::VERBOSITY_NORMAL);
 
-			$this->loadFromPhpSite(true);
+			return;
 		}
+
+		$this->out("Fetching data from php.net", self::VERBOSITY_NORMAL);
+
+		$this->loadFromPhpSite(1000);
 	}
 
 	/**
@@ -194,23 +194,24 @@ class PhpVersions
 		throw new \Exception("No source information for version $version.");
 	}
 
-	private function loadFromPhpSite($getAllVersions = false)
+	private function loadFromPhpSite($max = 1)
 	{
 		$versions = $this->versions;
 
 		foreach ([3, 4, 5, 7] as $major)
 		{
 			$url = "http://php.net/releases/index.php?serialize=1&version={$major}";
-			if ($getAllVersions)
+
+			if ($max > 1)
 			{
-				$url .= '&max=1000';
+				$url .= '&max=' . $max;
 				$versions = array_merge($versions, unserialize(file_get_contents($url)));
+
+				continue;
 			}
-			else
-			{
-				$info                       = unserialize(file_get_contents($url));
-				$versions[$info['version']] = $info;
-			}
+
+			$info                       = unserialize(file_get_contents($url));
+			$versions[$info['version']] = $info;
 		}
 
 		$versions       = $this->handleVersions($versions);
@@ -310,8 +311,6 @@ class PhpVersions
 	 */
 	private function handleAnnouncement($version, $info)
 	{
-		$announcement = null;
-
 		if (!isset($info['announcement']))
 		{
 			return null;
@@ -383,8 +382,3 @@ class PhpVersions
 		}
 	}
 }
-
-$v = new PhpVersions();
-
-$foo = $v->getVersions('x.y.zz');
-print_r($foo);
