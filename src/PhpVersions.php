@@ -34,7 +34,7 @@ namespace Greencape;
  * A utility class to provide a list of all PHP versions and their matching xDebug version.
  *
  * @package Greencape\PhpVersions
- * @version 1.0.1
+ * @version 1.0.2
  */
 class PhpVersions
 {
