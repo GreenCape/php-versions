@@ -43,51 +43,53 @@ This will output
 ```
 Array
 (
-    [version] => 7.0.12
+    [version] => 7.1.0
     [aliases] => Array
         (
             [0] => latest
             [1] => 7
-            [2] => 7.0
+            [2] => 7.1
         )
-
-    [announcement] => http://php.net/releases/7_0_12.php
-    [date] => 2016-10-13
+    [announcement] => http://php.net/releases/7_1_0.php
+    [date] => 2016-12-01
     [source] => Array
         (
             [bz2] => Array
                 (
-                    [filename] => php-7.0.12.tar.bz2
-                    [name] => PHP 7.0.12 (tar.bz2)
-                    [md5] => d7b11b40d84ed1f590e5f086f3711a3c
-                    [sha256] => 38c47294fe8fb239b0230dc63a93c3e4044f472ab93b5dff8b65feb4103a6a27
+                    [filename] => php-7.1.0.tar.bz2
+                    [name] => PHP 7.1.0 (tar.bz2)
+                    [md5] => 54e364b60a88db77adb96aacb10f10a4
+                    [sha256] => 68bcfd7deed5b3474d81dec9f74d122058327e2bed0ac25bbc9ec70995228e61
                 )
-
             [gz] => Array
                 (
-                    [filename] => php-7.0.12.tar.gz
-                    [name] => PHP 7.0.12 (tar.gz)
-                    [md5] => 5dd00a65a1d76a4792f6989d4576623d
-                    [sha256] => c4693cc363b4bbc7224294cc94faf3598e616cbe8540dd6975f68c7d3c52682f
+                    [filename] => php-7.1.0.tar.gz
+                    [name] => PHP 7.1.0 (tar.gz)
+                    [md5] => ec2218f97b4edbc35a2d7919ff37a662
+                    [sha256] => 9e84c5b13005c56374730edf534fe216f6a2e63792a9703d4b894e770bbccbae
                 )
-
             [xz] => Array
                 (
-                    [filename] => php-7.0.12.tar.xz
-                    [name] => PHP 7.0.12 (tar.xz)
-                    [md5] => bdcc4dbdac90c2a39422786653059f70
-                    [sha256] => f3d6c49e1c242e5995dec15e503fde996c327eb86cd7ec45c690e93c971b83ff
+                    [filename] => php-7.1.0.tar.xz
+                    [name] => PHP 7.1.0 (tar.xz)
+                    [md5] => cf36039303c47f493100afea522a8f53
+                    [sha256] => a810b3f29c21407c24caa88f50649320d20ba6892ae1923132598b8a0ca145b6
                 )
-
         )
-
     [museum] => 
     [xdebug] => Array
         (
             [version] => 2.4.1
             [sha1] => 52b5cede5dcb815de469d671bfdc626aec8adee3
         )
-
+    [gpg] => Array
+        (
+            [0] => Array
+                (
+                    [pub] => A917 B1EC DA84 AEC2 B568 FED6 F50A BC80 7BD5 DCD0
+                    [uid] => Davey Shafik <davey@php.net>
+                )
+        )
 )
 ```
 
@@ -101,7 +103,7 @@ Array
 $versions = new Greencape\PhpVersions();
 
 $info = $versions->getInfo();
-echo $info['version']; // 7.0.12
+echo $info['version']; // 7.1.0
 ```
 
 **Get the latest release of the 5.5 branch**
@@ -167,6 +169,47 @@ Array
     [name] => PHP 5.2.9 (tar.bz2)
     [md5] => 280d6cda7f72a4fc6de42fda21ac2db7
     [sha256] => 
+)
+```
+
+**Get the GPG key(s) for PHP 5.4**
+
+```php
+$versions = new Greencape\PhpVersions();
+
+$info = $versions->getGpgInfo('5.4');
+print_r($info);
+```
+
+Output:
+
+```
+Array
+(
+    [0] => Array
+        (
+            [pub] => F382 5282 6ACD 957E F380  D39F 2F79 56BC 5DA0 4B5D
+            [uid] => Stanislav Malyshev (PHP key) <stas@php.net>
+        )
+)
+```
+
+**Get the XDebug information for PHP 5.4**
+
+```php
+$versions = new Greencape\PhpVersions();
+
+$info = $versions->getXdebugInfo('5.4');
+print_r($info);
+```
+
+Output:
+
+```
+Array
+(
+    [version] => 2.4.1
+    [sha1] => 52b5cede5dcb815de469d671bfdc626aec8adee3
 )
 ```
 

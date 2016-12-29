@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 Feature Release
+
+ - Added support for GPG keys
+ - Added getter for XDebug information
+
 ## 1.0.2 Maintenance Release
 
  - Fixed PSR-4 autoload resolution

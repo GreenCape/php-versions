@@ -77,6 +77,36 @@ If an extension (one of 'xz', 'bz2', or 'gz') is provided, the matching source i
 
 `Exception` if no download information is found.
 
+## getGpgInfo
+
+`getGpgInfo( string $version )`
+
+> Get the GPG key(s) for a specific version.
+
+The version may be provided partially. It will be completed internally to match the latest version starting with the given string.
+
+**Parameters**
+
+  - `$version` - The version.
+
+**Returns**
+`array` The GPG key(s) for the version, if available.
+
+## getXdebugInfo
+
+`getXdebugInfo( string $version )`
+
+> Get information about XDebug for a specific version.
+
+The version may be provided partially. It will be completed internally to match the latest version starting with the given string.
+
+**Parameters**
+
+  - `$version` - The version.
+
+**Returns**
+`array` The XDebug information for the version.
+
 ## Constants Summary
 
   - `VERBOSITY_SILENT` `integer 0`

@@ -20,10 +20,10 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package     GreenCape\PHPVersions
- * @author      Niels Braczek <nbraczek@bsds.de>
+ * @package         GreenCape\PHPVersions
+ * @author          Niels Braczek <nbraczek@bsds.de>
  * @copyright   (C) 2016 GreenCape, Niels Braczek <nbraczek@bsds.de>
- * @license     http://opensource.org/licenses/MIT The MIT license (MIT)
+ * @license         http://opensource.org/licenses/MIT The MIT license (MIT)
  */
 
 namespace Greencape;
@@ -34,7 +34,7 @@ namespace Greencape;
  * A utility class to provide a list of all PHP versions and their matching xDebug version.
  *
  * @package Greencape\PhpVersions
- * @version 1.0.2
+ * @version 1.1.0
  */
 class PhpVersions
 {
@@ -52,6 +52,60 @@ class PhpVersions
 		'4.3' => ['version' => '2.0.5', 'sha1' => '77e6a8fd56641d8b37be68ea3c4a5c52b7511114'],
 		'5.2' => ['version' => '2.2.7', 'sha1' => '587d300b8df0d1213910c59dda0c4f5807233744'],
 		'5.4' => ['version' => '2.4.1', 'sha1' => '52b5cede5dcb815de469d671bfdc626aec8adee3'],
+	];
+	private $gpgKeys = [
+		'5.3' => [
+			[
+				'pub' => '0B96 609E 270F 565C 1329  2B24 C13C 70B8 7267 B52D',
+				'uid' => 'David Soria Parra <dsp@php.net>'
+			],
+			[
+				'pub' => '0A95 E9A0 2654 2D53 835E  3F3A 7DEC 4E69 FC9C 83D7',
+				'uid' => 'Johannes Schlüter <johannes@php.net>'
+			],
+		],
+		'5.4' => [
+			[
+				'pub' => 'F382 5282 6ACD 957E F380  D39F 2F79 56BC 5DA0 4B5D',
+				'uid' => 'Stanislav Malyshev (PHP key) <stas@php.net>'
+			],
+		],
+		'5.5' => [
+			[
+				'pub' => '0BD7 8B5F 9750 0D45 0838  F95D FE85 7D9A 90D9 0EC1',
+				'uid' => 'Julien Pauli <jpauli@php.net>'
+			],
+			[
+				'pub' => '0B96 609E 270F 565C 1329  2B24 C13C 70B8 7267 B52D',
+				'uid' => 'David Soria Parra <dsp@php.net>'
+			],
+		],
+		'5.6' => [
+			[
+				'pub' => '6E4F 6AB3 21FD C07F 2C33  2E3A C2BF 0BC4 33CF C8B3',
+				'uid' => 'Ferenc Kovacs <tyrael@php.net>'
+			],
+			[
+				'pub' => '0BD7 8B5F 9750 0D45 0838  F95D FE85 7D9A 90D9 0EC1',
+				'uid' => 'Julien Pauli <jpauli@php.net>'
+			],
+		],
+		'7.0' => [
+			[
+				'pub' => '1A4E 8B72 77C4 2E53 DBA9  C7B9 BCAA 30EA 9C0D 5763',
+				'uid' => 'Anatol Belski <ab@php.net>'
+			],
+			[
+				'pub' => '6E4F 6AB3 21FD C07F 2C33  2E3A C2BF 0BC4 33CF C8B3',
+				'uid' => 'Ferenc Kovacs <tyrael@php.net>'
+			],
+		],
+		'7.1' => [
+			[
+				'pub' => 'A917 B1EC DA84 AEC2 B568 FED6 F50A BC80 7BD5 DCD0',
+				'uid' => 'Davey Shafik <davey@php.net>'
+			],
+		],
 	];
 
 	/**
@@ -149,10 +203,7 @@ class PhpVersions
 	 */
 	public function getInfo($version = 'latest')
 	{
-		if (isset($this->aliases[$version]))
-		{
-			$version = $this->aliases[$version];
-		}
+		$version = $this->resolveVersion($version);
 
 		if (!isset($this->versions[$version]))
 		{
@@ -275,6 +326,7 @@ class PhpVersions
 				'source'       => $sources,
 				'museum'       => isset($info['museum']) ? (boolean) $info['museum'] : false,
 				'xdebug'       => $this->getXdebugInfo($version),
+				'gpg'          => $this->getGpgInfo($version),
 			];
 		}
 
@@ -358,10 +410,13 @@ class PhpVersions
 
 	/**
 	 * @param $version
+	 *
+	 * @return array
 	 */
-	private function getXdebugInfo($version)
+	public function getXdebugInfo($version)
 	{
-		$xDebug = [];
+		$version = $this->resolveVersion($version);
+		$xDebug  = [];
 
 		foreach ($this->xDebugVersions as $phpRelease => $xDebugInfo)
 		{
@@ -374,11 +429,45 @@ class PhpVersions
 		return $xDebug;
 	}
 
+	/**
+	 * @param $version
+	 *
+	 * @return array
+	 */
+	public function getGpgInfo($version)
+	{
+		$phpRelease = preg_replace('~^(\d+\.\d+)\.\d+$~', '\1', $this->resolveVersion($version));
+
+		if (!isset($this->gpgKeys[$phpRelease]))
+		{
+			return [];
+		}
+
+		return $this->gpgKeys[$phpRelease];
+	}
+
 	private function out($message, $verbosity = self::VERBOSITY_NORMAL)
 	{
 		if ($verbosity <= $this->verbosity)
 		{
 			echo "$message\n";
 		}
+	}
+
+	/**
+	 * @param $version
+	 *
+	 * @return mixed
+	 */
+	private function resolveVersion($version)
+	{
+		if (isset($this->aliases[$version]))
+		{
+			$version = $this->aliases[$version];
+
+			return $version;
+		}
+
+		return $version;
 	}
 }
