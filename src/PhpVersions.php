@@ -52,6 +52,7 @@ class PhpVersions
 		'4.3' => ['version' => '2.0.5', 'sha1' => '77e6a8fd56641d8b37be68ea3c4a5c52b7511114'],
 		'5.2' => ['version' => '2.2.7', 'sha1' => '587d300b8df0d1213910c59dda0c4f5807233744'],
 		'5.4' => ['version' => '2.4.1', 'sha1' => '52b5cede5dcb815de469d671bfdc626aec8adee3'],
+		'5.5' => ['version' => '2.5.0', 'sha1' => '0d31602a6ee2ba6d2e18a6db79bdb9a2a706bcd9'],
 	];
 	private $gpgKeys = [
 		'5.3' => [
