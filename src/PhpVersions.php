@@ -274,6 +274,8 @@ class PhpVersions
 			$this->versions[$version]['aliases'][] = $alias;
 		}
 
+		$this->fixFilenameBug();
+
 		$this->out("Writing to cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
 
 		file_put_contents($this->cacheFilename, serialize([
@@ -470,5 +472,22 @@ class PhpVersions
 		}
 
 		return $version;
+	}
+
+	/**
+	 * Fix the filename bug
+	 *
+	 * The original data from the PHP site contain a wrong filename for
+	 * the xz compressed source of 5.5.37.
+	 */
+	private function fixFilenameBug()
+	{
+		if (!isset($this->versions['5.5.37']))
+		{
+			return;
+		}
+
+		$this->versions['5.5.37']['source']['xz']['filename'] = 'php-5.5.37.tar.xz';
+		$this->versions['5.5.37']['source']['xz']['name'] = 'PHP 5.5.37 (tar.xz)';
 	}
 }

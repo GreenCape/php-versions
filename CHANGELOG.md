@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.2 Maintenance Release
+
+ - Fixed filename bug from php.net
+
+   The original data from the PHP site contain a wrong filename for
+   the xz compressed source of 5.5.37.
+  
+## 1.1.1 Maintenance Release
+
+ - Updated for XDebug 2.5.0
+  
 ## 1.1.0 Feature Release
 
  - Added support for GPG keys
