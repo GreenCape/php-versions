@@ -4,20 +4,23 @@
 
   - Namespace: Greencape
   - Package: Greencape\PhpVersions
-  - Version: 1.0.0
+  - Version: 1.2.0
   - Located at php-versions.php
 
 ## __construct
-`__construct( string $cache = null, integer $verbosity = Greencape\PhpVersions::VERBOSITY_NORMAL )`
+
+`__construct( string $cache = null, integer $flags = Greencape\PhpVersions::VERBOSITY_NORMAL | Greencape\PhpVersions::CACHE_ENABLED)`
 
 > PhpVersions constructor.
 
-Data is read from the cache file, if available. If the cache file is older than one week, PhpVersions looks for new releases. If the cache file does not exist, all known releases are downloaded from php.net.
+Data is read from the cache file, if enabled and available.
+If caching is enabled and the cache file is older than one week, PhpVersions looks for new releases.
+If caching is disabled or the cache file does not exist, all known releases are downloaded from php.net.
 
 **Parameters**
 
   - `$cache` - Optional cache path. Defaults to ~/.php_versions
-  - `$verbosity` - Verbosity level. 0=silent, 3=debug
+  - `$flags` - Combination of VERBOSITY_* and CACHE_* flags, combined with '|'. See *Constants Summary* below.
 
 ## getVersions
 
@@ -109,7 +112,13 @@ The version may be provided partially. It will be completed internally to match 
 
 ## Constants Summary
 
-  - `VERBOSITY_SILENT` `integer 0`
-  - `VERBOSITY_NORMAL` `integer 1`
-  - `VERBOSITY_VERBOSE` `integer 2`
-  - `VERBOSITY_DEBUG` `integer 3` 
+Constant | Value | as int
+-------- | ----- | ------
+`VERBOSITY_SILENT` | `0x0000` | 0
+`VERBOSITY_NORMAL` | `0x0001` | 1
+`VERBOSITY_VERBOSE` | `0x0010` | 2
+`VERBOSITY_DEBUG` | `0x0011` | 3
+`VERBOSITY_MASK` | `0x0011` | 3
+`CACHE_ENABLED` | `0x0000` | 0
+`CACHE_DISABLED` | `0x0100` | 4
+`CACHE_MASK` | `0x0100` | 4

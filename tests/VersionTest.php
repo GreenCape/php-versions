@@ -25,4 +25,13 @@ class VersionTest extends \PHPUnit\Framework\TestCase
         $xdebugInfo = $versions->getXdebugInfo($phpVersion);
         $this->assertEquals($xdebugVersion, $xdebugInfo['version']);
     }
+
+    public function testGetVersionWithoutCache()
+    {
+        $this->expectOutputString("Fetching data from php.net\n");
+        $flags = \Greencape\PhpVersions::VERBOSITY_NORMAL | \Greencape\PhpVersions::CACHE_DISABLED;
+        $versions = new Greencape\PhpVersions(null, $flags);
+
+        $versions->getVersions('4');
+    }
 }

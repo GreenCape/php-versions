@@ -4,7 +4,7 @@
  *
  * MIT License
  *
- * Copyright (c) 2016, Niels Braczek <nbraczek@bsds.de>. All rights reserved.
+ * Copyright (c) 2016-17, Niels Braczek <nbraczek@bsds.de>. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -20,10 +20,10 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package         GreenCape\PHPVersions
- * @author          Niels Braczek <nbraczek@bsds.de>
- * @copyright   (C) 2016 GreenCape, Niels Braczek <nbraczek@bsds.de>
- * @license         http://opensource.org/licenses/MIT The MIT license (MIT)
+ * @package     GreenCape\PHPVersions
+ * @author      Niels Braczek <nbraczek@bsds.de>
+ * @copyright   (C) 2016-17 GreenCape, Niels Braczek <nbraczek@bsds.de>
+ * @license     http://opensource.org/licenses/MIT The MIT license (MIT)
  */
 
 namespace Greencape;
@@ -34,7 +34,7 @@ namespace Greencape;
  * A utility class to provide a list of all PHP versions and their matching xDebug version.
  *
  * @package Greencape\PhpVersions
- * @version 1.1.0
+ * @version 1.2.0
  */
 class PhpVersions
 {
@@ -42,11 +42,16 @@ class PhpVersions
     const VERBOSITY_NORMAL = 1;
     const VERBOSITY_VERBOSE = 2;
     const VERBOSITY_DEBUG = 3;
+    const VERBOSITY_MASK = 3;
+
+    const CACHE_ENABLED = 0;
+    const CACHE_DISABLED = 4;
+    const CACHE_MASK = 4;
 
     private $verbosity = 1;
     private $versions = [];
     private $aliases = [];
-    private $cacheFilename;
+    private $cacheFilename = null;
     private $xDebugVersions = [
         '3.0' => ['version' => '1.3.2', 'sha256' => 'f3f9d2e60d1e7a2621f546812195bd164174933252b5752b778450449eb3b9bd'],
         '4.3' => ['version' => '2.0.5', 'sha256' => '4638641e643f4cedd9d2ec360fb13f47221973518b07ec6a2016c967063bb8b2'],
@@ -103,7 +108,7 @@ class PhpVersions
         ],
         '7.1' => [
             [
-                'pub' => 'A917 B1EC DA84 AEC2 B568 FED6 F50A BC80 7BD5 DCD0',
+                'pub' => 'A917 B1EC DA84 AEC2 B568  FED6 F50A BC80 7BD5 DCD0',
                 'uid' => 'Davey Shafik <davey@php.net>'
             ],
             [
@@ -121,32 +126,36 @@ class PhpVersions
      * If the cache file does not exist, all known releases are downloaded from php.net.
      *
      * @param string $cache Optional cache path. Defaults to ~/.php_versions
-     * @param int $verbosity Verbosity level. 0=silent, 3=debug
+     * @param int $flags Combination of VERBOSITY_* and CACHE_* flags, combined with '|'
+     *
      */
-    public function __construct($cache = null, $verbosity = self::VERBOSITY_NORMAL)
+    public function __construct($cache = null, $flags = self::VERBOSITY_NORMAL | self::CACHE_ENABLED)
     {
-        $this->verbosity = $verbosity;
+        $this->verbosity = ($flags & self::VERBOSITY_MASK);
 
-        if (empty($cache)) {
-            $cache = getenv('HOME') . '/.php_versions';
-        }
-
-        $this->cacheFilename = $cache;
-
-        if (file_exists($this->cacheFilename)) {
-            $this->out("Reading from cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
-
-            $data = unserialize((file_get_contents($this->cacheFilename)));
-            $this->versions = $data['versions'];
-            $this->aliases = $data['aliases'];
-
-            if (time() - filemtime($this->cacheFilename) > 3600 * 24 * 7) {
-                $this->out("Looking for new releases", self::VERBOSITY_NORMAL);
-
-                $this->loadFromPhpSite(2);
+        if (($flags & self::CACHE_MASK) == self::CACHE_ENABLED)
+        {
+            if (empty($cache)) {
+                $cache = getenv('HOME') . '/.php_versions';
             }
 
-            return;
+            $this->cacheFilename = $cache;
+
+            if (file_exists($this->cacheFilename)) {
+                $this->out("Reading from cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
+
+                $data = unserialize((file_get_contents($this->cacheFilename)));
+                $this->versions = $data['versions'];
+                $this->aliases = $data['aliases'];
+
+                if (time() - filemtime($this->cacheFilename) > 3600 * 24 * 7) {
+                    $this->out("Looking for new releases", self::VERBOSITY_NORMAL);
+
+                    $this->loadFromPhpSite(2);
+                }
+
+                return;
+            }
         }
 
         $this->out("Fetching data from php.net", self::VERBOSITY_NORMAL);
@@ -188,12 +197,15 @@ class PhpVersions
 
         $this->fixFilenameBug();
 
-        $this->out("Writing to cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
+        if (!empty($this->cacheFilename))
+        {
+            $this->out("Writing to cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
 
-        file_put_contents($this->cacheFilename, serialize([
-            'versions' => $this->versions,
-            'aliases' => $this->aliases
-        ]));
+            file_put_contents($this->cacheFilename, serialize([
+                'versions' => $this->versions,
+                'aliases' => $this->aliases
+            ]));
+        }
     }
 
     /**

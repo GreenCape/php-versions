@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0 Feature Release
+
+ - Added constructor flag for cache control
+
+## 1.1.3 Maintenance Release
+
+ - Updated for XDebug 2.5.3
+ - Added new GPG key for PHP 7.1
+
 ## 1.1.2 Maintenance Release
 
  - Fixed filename bug from php.net
@@ -22,6 +31,6 @@
 
 ## 1.0.1 Maintenance Release
 
- - Get the neweset 2 releases on refresh
+ - Get the newest 2 releases on refresh
 
 ## 1.0.0 Initial Release
