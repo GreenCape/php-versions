@@ -106,6 +106,10 @@ class PhpVersions
                 'pub' => 'A917 B1EC DA84 AEC2 B568 FED6 F50A BC80 7BD5 DCD0',
                 'uid' => 'Davey Shafik <davey@php.net>'
             ],
+            [
+                'pub' => '5289 95BF EDFB A719 1D46  839E F9BA 0ADA 31CB D89E',
+                'uid' => 'Joe Watkins <krakjoe@php.net>'
+            ],
         ],
     ];
 
