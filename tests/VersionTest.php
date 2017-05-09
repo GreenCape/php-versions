@@ -1,5 +1,7 @@
 <?php
 
+use Greencape\PHPVersions\PhpVersions;
+
 class VersionTest extends \PHPUnit\Framework\TestCase
 {
     public function versionMap()
@@ -20,7 +22,7 @@ class VersionTest extends \PHPUnit\Framework\TestCase
      */
     public function testXdebugVersion($phpVersion, $xdebugVersion)
     {
-        $versions = new Greencape\PhpVersions();
+        $versions = new PhpVersions();
 
         $xdebugInfo = $versions->getXdebugInfo($phpVersion);
         $this->assertEquals($xdebugVersion, $xdebugInfo['version']);
@@ -29,8 +31,8 @@ class VersionTest extends \PHPUnit\Framework\TestCase
     public function testGetVersionWithoutCache()
     {
         $this->expectOutputString("Fetching data from php.net\n");
-        $flags = \Greencape\PhpVersions::VERBOSITY_NORMAL | \Greencape\PhpVersions::CACHE_DISABLED;
-        $versions = new Greencape\PhpVersions(null, $flags);
+        $flags = PhpVersions::VERBOSITY_NORMAL | PhpVersions::CACHE_DISABLED;
+        $versions = new PhpVersions(null, $flags);
 
         $versions->getVersions('4');
     }

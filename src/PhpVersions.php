@@ -26,7 +26,7 @@
  * @license     http://opensource.org/licenses/MIT The MIT license (MIT)
  */
 
-namespace Greencape;
+namespace Greencape\PHPVersions;
 
 /**
  * Class PhpVersions
@@ -133,8 +133,7 @@ class PhpVersions
     {
         $this->verbosity = ($flags & self::VERBOSITY_MASK);
 
-        if (($flags & self::CACHE_MASK) == self::CACHE_ENABLED)
-        {
+        if (($flags & self::CACHE_MASK) == self::CACHE_ENABLED) {
             if (empty($cache)) {
                 $cache = getenv('HOME') . '/.php_versions';
             }
@@ -197,8 +196,7 @@ class PhpVersions
 
         $this->fixFilenameBug();
 
-        if (!empty($this->cacheFilename))
-        {
+        if (!empty($this->cacheFilename)) {
             $this->out("Writing to cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
 
             file_put_contents($this->cacheFilename, serialize([
