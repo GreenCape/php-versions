@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0
+
+ - Added command line interface
+ 
 ## 1.2.0 Feature Release
 
  - Added constructor flag for cache control
