@@ -35,13 +35,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * The info command reports information about a PHP version.
+ * The download url command returns the download url for a PHP version.
  *
  * @package     GreenCape\JoomlaCLI
  * @subpackage  Command
  * @since       Class available since Release 1.3.0
  */
-class InfoCommand extends Command
+class HashCommand extends Command
 {
     /**
      * Configure the options for the version command
@@ -51,18 +51,22 @@ class InfoCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('info')
-            ->setDescription('Show information about a PHP version')
+            ->setName('hash')
+            ->setDescription('Get the sha256 or md5 hash for a PHP distribution file')
             ->addArgument(
                 'php',
                 InputOption::VALUE_OPTIONAL,
                 'The PHP version to get the info for. Defaults to \'latest\''
-            )
-            ->addOption(
+            )->addOption(
                 'format',
                 'f',
                 InputOption::VALUE_OPTIONAL,
-                'The output format. Supported values are \'dump\' (default), \'json\'.'
+                'The compression format, one of \'bz2\', \'gz\', or \'xz\''
+            )->addOption(
+                'type',
+                't',
+                InputOption::VALUE_OPTIONAL,
+                'The requested hash type, one of \'sha256\' (default) or \'md5\''
             );
     }
 
@@ -84,21 +88,22 @@ class InfoCommand extends Command
             $version = 'latest';
         }
 
-        $info = $phpVersions->getInfo($version);
+        $type = $input->getOption('type');
+        if (empty($type)) {
+            $type = 'sha256';
+        }
 
         $format = $input->getOption('format');
         if (empty($format)) {
-            $format = 'dump';
+            $format = null;
         }
 
-        if ($format == 'json') {
-            $result = json_encode($info);
-        } elseif ($format == 'dump') {
-            $result = print_r($info, true);
-        } else {
-            throw new \RuntimeException("Format '$format' is currently not supported.'");
+        $info = $phpVersions->getSourceInfo($version, $format);
+
+        if (!isset($info[$type])) {
+            throw new \RuntimeException("No info about $type hash");
         }
 
-        $output->writeln($result);
+        $output->write($info[$type]);
     }
 }

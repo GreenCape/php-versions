@@ -35,13 +35,13 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * The info command reports information about a PHP version.
+ * The version command reports full version of a PHP version.
  *
  * @package     GreenCape\JoomlaCLI
  * @subpackage  Command
  * @since       Class available since Release 1.3.0
  */
-class InfoCommand extends Command
+class VersionCommand extends Command
 {
     /**
      * Configure the options for the version command
@@ -51,18 +51,12 @@ class InfoCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('info')
-            ->setDescription('Show information about a PHP version')
+            ->setName('version')
+            ->setDescription('Show full version number of a PHP version')
             ->addArgument(
                 'php',
                 InputOption::VALUE_OPTIONAL,
                 'The PHP version to get the info for. Defaults to \'latest\''
-            )
-            ->addOption(
-                'format',
-                'f',
-                InputOption::VALUE_OPTIONAL,
-                'The output format. Supported values are \'dump\' (default), \'json\'.'
             );
     }
 
@@ -86,19 +80,6 @@ class InfoCommand extends Command
 
         $info = $phpVersions->getInfo($version);
 
-        $format = $input->getOption('format');
-        if (empty($format)) {
-            $format = 'dump';
-        }
-
-        if ($format == 'json') {
-            $result = json_encode($info);
-        } elseif ($format == 'dump') {
-            $result = print_r($info, true);
-        } else {
-            throw new \RuntimeException("Format '$format' is currently not supported.'");
-        }
-
-        $output->writeln($result);
+        $output->write($info['version']);
     }
 }

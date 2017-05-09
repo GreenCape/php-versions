@@ -27,7 +27,64 @@ Either download this repository and copy `src/php-versions.php` to your project,
 $ composer require greencape/php-versions
 ```
 
-## Usage
+## Usage on the Command Line
+
+### Download URLs
+
+Get the download URL for a PHP version or its signature file
+
+    $ php-versions download-url [options] [--] [<php>]
+
+Argument | Description
+-------- | -----------
+php | The PHP version to get the info for. Defaults to 'latest'
+
+Option | Description
+------ | -----------
+--asc | Get the URL for the signature file instead of the PHP source
+-f, --format[=FORMAT] | The requested compression format, one of 'bz2', 'gz', or 'xz'
+
+### Hashes
+
+Get the sha256 or md5 hash for a PHP distribution file
+
+    $ php-versions hash [options] [--] [<php>]
+
+Argument | Description
+-------- | -----------
+php | The PHP version to get the info for. Defaults to 'latest'
+
+Option | Description
+------ | -----------
+-f, --format[=FORMAT] | The requested compression format, one of 'bz2', 'gz', or 'xz'
+-t, --type[=TYPE] | The requested hash type, one of 'sha256' (default) or 'md5'
+
+### General Info
+
+Show information about a PHP version
+
+    $ php-versions hash [options] [--] [<php>]
+
+Argument | Description
+-------- | -----------
+php | The PHP version to get the info for. Defaults to 'latest'
+
+Option | Description
+------ | -----------
+-f, --format[=FORMAT] | The output format. Supported values are 'dump' (default), 'json'
+
+### Versions
+
+Show full version number of a PHP version.
+
+    $ php-versions version [<php>]
+
+Argument | Description
+-------- | -----------
+php | The PHP version to get the info for. Defaults to 'latest'
+
+
+## Usage as PHP Class
 
 The simplest use-case is to determine the current (latest) version of PHP:
 
@@ -95,7 +152,7 @@ Array
 
 *greencape/php-versions* provides a couple of access methods. See [Examples](#examples) and [API](#api) sections for more information.
 
-## Examples
+### Examples
 
 **Get the latest release**
 
