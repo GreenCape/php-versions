@@ -41,7 +41,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @subpackage  Command
  * @since       Class available since Release 1.3.0
  */
-class HashCommand extends Command
+class GpgCommand extends Command
 {
     /**
      * Configure the options for the version command
@@ -51,22 +51,12 @@ class HashCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('hash')
-            ->setDescription('Get the sha256 or md5 hash for a PHP distribution file')
+            ->setName('gpg')
+            ->setDescription('Get the GPG key for a PHP version')
             ->addArgument(
                 'php',
                 InputOption::VALUE_OPTIONAL,
                 'The PHP version to get the info for. Defaults to \'latest\''
-            )->addOption(
-                'format',
-                'f',
-                InputOption::VALUE_OPTIONAL,
-                'The compression format, one of \'bz2\', \'gz\', or \'xz\''
-            )->addOption(
-                'type',
-                't',
-                InputOption::VALUE_OPTIONAL,
-                'The requested hash type, one of \'sha256\' (default) or \'md5\''
             );
     }
 
@@ -88,18 +78,12 @@ class HashCommand extends Command
             $version = 'latest';
         }
 
-        $type = $input->getOption('type');
-        if (empty($type)) {
-            $type = 'sha256';
+        $gpgKeys = [];
+        foreach ($phpVersions->getGpgInfo($version) as $key)
+        {
+            $gpgKeys[] = str_replace(' ', '', $key['pub']);
         }
 
-        $format = $input->getOption('format');
-        if (empty($format)) {
-            $format = null;
-        }
-
-        $info = $phpVersions->getSourceInfo($version, $format);
-
-        $output->write(isset($info[$type]) ? $info[$type] : '');
+        $output->write(implode(' ', $gpgKeys));
     }
 }

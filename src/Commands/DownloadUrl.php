@@ -67,6 +67,11 @@ class DownloadUrlCommand extends Command
                 'f',
                 InputOption::VALUE_OPTIONAL,
                 'The requested compression format, one of \'bz2\', \'gz\', or \'xz\''
+            )->addOption(
+                'url',
+                'u',
+                InputOption::VALUE_NONE,
+                'If set, the full URL is returned. if not, just the filename'
             );
     }
 
@@ -98,8 +103,13 @@ class DownloadUrlCommand extends Command
         $filename = $info['filename'];
         if ($input->getOption('asc')) {
             $filename .= '.asc';
-
         }
-        $output->write("https://secure.php.net/get/$filename/from/this/mirror");
+
+        $result = $filename;
+        if ($input->getOption('url')) {
+            $result = "https://secure.php.net/get/$filename/from/this/mirror";
+        }
+
+        $output->write($result);
     }
 }

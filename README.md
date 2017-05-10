@@ -19,7 +19,7 @@
 
 ## Install
 
-*greencape/php-versions* requires **PHP 5.4+** with **remote file access**, and comes with **no dependencies**.
+*greencape/php-versions* requires **PHP 5.4+** with **remote file access**, and comes with **no dependencies** except the Symfony console.
 
 Either download this repository and copy `src/php-versions.php` to your project, or use `composer` (recommended):
 
@@ -29,9 +29,23 @@ $ composer require greencape/php-versions
 
 ## Usage on the Command Line
 
+### General Info
+
+Show information about a PHP version
+
+    $ php-versions hash [options] [--] [<php>]
+
+Argument | Description
+-------- | -----------
+php | The PHP version to get the info for. Defaults to 'latest'
+
+Option | Description
+------ | -----------
+-f, --format[=FORMAT] | The output format. Supported values are 'dump' (default), 'json'
+
 ### Download URLs
 
-Get the download URL for a PHP version or its signature file
+Get the filename or download URL for a PHP version or its signature file
 
     $ php-versions download-url [options] [--] [<php>]
 
@@ -43,6 +57,17 @@ Option | Description
 ------ | -----------
 --asc | Get the URL for the signature file instead of the PHP source
 -f, --format[=FORMAT] | The requested compression format, one of 'bz2', 'gz', or 'xz'
+-u, --url | If set, the full URL is returned. if not, just the filename
+
+### GPG Keys
+
+Get the GPG keys for a PHP distribution file
+
+    $ php-versions gpg [<php>]
+
+Argument | Description
+-------- | -----------
+php | The PHP version to get the info for. Defaults to 'latest'
 
 ### Hashes
 
@@ -58,20 +83,6 @@ Option | Description
 ------ | -----------
 -f, --format[=FORMAT] | The requested compression format, one of 'bz2', 'gz', or 'xz'
 -t, --type[=TYPE] | The requested hash type, one of 'sha256' (default) or 'md5'
-
-### General Info
-
-Show information about a PHP version
-
-    $ php-versions hash [options] [--] [<php>]
-
-Argument | Description
--------- | -----------
-php | The PHP version to get the info for. Defaults to 'latest'
-
-Option | Description
------- | -----------
--f, --format[=FORMAT] | The output format. Supported values are 'dump' (default), 'json'
 
 ### Versions
 
