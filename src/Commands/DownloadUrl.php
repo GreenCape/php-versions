@@ -108,6 +108,10 @@ class DownloadUrlCommand extends Command
         $result = $filename;
         if ($input->getOption('url')) {
             $result = "https://secure.php.net/get/$filename/from/this/mirror";
+            $info = $phpVersions->getInfo($version);
+            if ($info['museum']) {
+                $result = "http://museum.php.net/php5/$filename";
+            }
         }
 
         $output->write($result);
