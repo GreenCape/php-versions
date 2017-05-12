@@ -85,7 +85,11 @@ class DownloadUrlCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $phpVersions = new PhpVersions();
+        $verbosity = PhpVersions::VERBOSITY_NORMAL;
+        $verbosity = $input->getOption('verbose') == 2 ? PhpVersions::VERBOSITY_VERBOSE : $verbosity;
+        $verbosity = $input->getOption('verbose') == 3 ? PhpVersions::VERBOSITY_DEBUG : $verbosity;
+        $verbosity = $input->getOption('quiet') ? PhpVersions::VERBOSITY_SILENT : $verbosity;
+        $phpVersions = new PhpVersions(null, $verbosity);
 
         $versions = $input->getArgument('php');
         $version = array_shift($versions);
