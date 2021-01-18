@@ -49,8 +49,8 @@ class PhpVersions
     public const CACHE_MASK = 4;
 
     private int $verbosity;
-    private $versions = [];
-    private $aliases = [];
+    private array $versions = [];
+    private array $aliases = [];
     private ?string $cacheFilename = null;
     private array $xDebugVersions = [
         '3.0' => ['version' => '1.3.2', 'sha256' => 'f3f9d2e60d1e7a2621f546812195bd164174933252b5752b778450449eb3b9bd'],

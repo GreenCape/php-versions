@@ -77,10 +77,10 @@ class HashCommand extends Command
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
      *
-     * @return  void
+     * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
         $phpVersions = new PhpVersions(null, $verbosity);
@@ -99,5 +99,7 @@ class HashCommand extends Command
         $info = $phpVersions->getSourceInfo($version, $format);
 
         $output->write($info[$type] ?? '');
+
+        return 0;
     }
 }

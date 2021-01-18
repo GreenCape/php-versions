@@ -30,7 +30,9 @@
 namespace GreenCape\PHPVersions;
 
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * The base command provides common functionality
@@ -41,6 +43,18 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 abstract class Command extends SymfonyCommand
 {
+    /**
+     * Clone of Symfony command's execute method to add return type
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        throw new LogicException('You must override the execute() method in the concrete command class.');
+    }
+
     /**
      * @param InputInterface $input
      * @return int

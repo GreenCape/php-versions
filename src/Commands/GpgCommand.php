@@ -67,9 +67,9 @@ class GpgCommand extends Command
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
      *
-     * @return  void
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
         $phpVersions = new PhpVersions(null, $verbosity);
@@ -81,5 +81,7 @@ class GpgCommand extends Command
         }
 
         $output->write(implode(' ', $gpgKeys));
+
+        return 0;
     }
 }

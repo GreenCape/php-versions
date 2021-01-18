@@ -82,10 +82,10 @@ class DownloadUrlCommand extends Command
      * @param InputInterface $input An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
      *
-     * @return  void
+     * @return int
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
         $phpVersions = new PhpVersions(null, $verbosity);
@@ -113,5 +113,7 @@ class DownloadUrlCommand extends Command
         }
 
         $output->write($result);
+
+        return 0;
     }
 }

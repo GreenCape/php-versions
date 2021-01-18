@@ -64,7 +64,7 @@ class Application extends BaseApplication
     {
         foreach (glob($path . '/*.php') as $filename) {
             require_once $filename;
-            $commandClass = __NAMESPACE__ . '\\' . basename($filename, '.php');
+            $commandClass = __NAMESPACE__ . '\\Commands\\' . basename($filename, '.php');
             $command = new $commandClass;
             $this->add($command);
         }
