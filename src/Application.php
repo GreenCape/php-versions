@@ -56,15 +56,15 @@ class Application extends BaseApplication
     /**
      * Dynamically add all commands from a path
      *
-     * @param   string $path The directory with the plugins
+     * @param string $path The directory with the plugins
      *
      * @return  void
      */
-    private function addPlugins($path)
+    private function addPlugins(string $path): void
     {
         foreach (glob($path . '/*.php') as $filename) {
             require_once $filename;
-            $commandClass = __NAMESPACE__ . '\\' . basename($filename, '.php') . 'Command';
+            $commandClass = __NAMESPACE__ . '\\' . basename($filename, '.php');
             $command = new $commandClass;
             $this->add($command);
         }
@@ -73,14 +73,12 @@ class Application extends BaseApplication
     /**
      * Runs the current application.
      *
-     * @param   InputInterface $input An InputInterface instance
-     * @param   OutputInterface $output An OutputInterface instance
+     * @param InputInterface|null $input An InputInterface instance
+     * @param OutputInterface|null $output An OutputInterface instance
      *
      * @return  integer  0 if everything went fine, or an error code
-     *
-     * @throws  \Exception on problems
      */
-    public function run(InputInterface $input = null, OutputInterface $output = null)
+    public function run(InputInterface $input = null, OutputInterface $output = null): int
     {
         try {
             parent::run($input, $output);

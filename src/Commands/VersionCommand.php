@@ -27,82 +27,57 @@
  * @since       File available since Release 1.3.0
  */
 
-namespace GreenCape\PHPVersions;
+namespace GreenCape\PHPVersions\Commands;
 
-use Symfony\Component\Console\Command\Command;
+use GreenCape\PHPVersions\Command;
+use GreenCape\PHPVersions\PhpVersions;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * The info command reports information about a PHP version.
+ * The version command reports full version of a PHP version.
  *
- * @package     GreenCape\JoomlaCLI
+ * @package     GreenCape\PHPVersions
  * @subpackage  Command
  * @since       Class available since Release 1.3.0
  */
-class InfoCommand extends Command
+class VersionCommand extends Command
 {
     /**
      * Configure the options for the version command
      *
      * @return  void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this
-            ->setName('info')
-            ->setDescription('Show information about a PHP version')
+            ->setName('version')
+            ->setDescription('Show full version number of a PHP version')
             ->addArgument(
                 'php',
                 InputOption::VALUE_OPTIONAL,
                 'The PHP version to get the info for. Defaults to \'latest\''
-            )
-            ->addOption(
-                'format',
-                'f',
-                InputOption::VALUE_OPTIONAL,
-                'The output format. Supported values are \'dump\' (default), \'json\'.'
             );
     }
 
     /**
      * Execute the version command
      *
-     * @param   InputInterface $input An InputInterface instance
-     * @param   OutputInterface $output An OutputInterface instance
+     * @param InputInterface $input An InputInterface instance
+     * @param OutputInterface $output An OutputInterface instance
      *
      * @return  void
+     * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
-        $verbosity = PhpVersions::VERBOSITY_NORMAL;
-        $verbosity = $input->getOption('verbose') == 2 ? PhpVersions::VERBOSITY_VERBOSE : $verbosity;
-        $verbosity = $input->getOption('verbose') == 3 ? PhpVersions::VERBOSITY_DEBUG : $verbosity;
-        $verbosity = $input->getOption('quiet') ? PhpVersions::VERBOSITY_SILENT : $verbosity;
+        $verbosity = $this->getVerbosity($input);
         $phpVersions = new PhpVersions(null, $verbosity);
-
-        $versions = $input->getArgument('php');
-        $version = array_shift($versions);
-        if (empty($version)) {
-            $version = 'latest';
-        }
+        $version = $this->getVersion($input);
 
         $info = $phpVersions->getInfo($version);
 
-        $format = $input->getOption('format');
-        if (empty($format)) {
-            $format = 'dump';
-        }
-
-        if ($format == 'json') {
-            $result = json_encode($info);
-        } elseif ($format == 'dump') {
-            $result = print_r($info, true);
-        } else {
-            throw new \RuntimeException("Format '$format' is currently not supported.'");
-        }
-
-        $output->writeln($result);
+        $output->write($info['version']);
     }
 }

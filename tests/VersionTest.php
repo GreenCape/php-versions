@@ -1,10 +1,11 @@
 <?php
 
-use Greencape\PHPVersions\PhpVersions;
+use GreenCape\PHPVersions\PhpVersions;
+use PHPUnit\Framework\TestCase;
 
-class VersionTest extends \PHPUnit\Framework\TestCase
+class VersionTest extends TestCase
 {
-    public function versionMap()
+    public function versionMap(): array
     {
         return [
             ['php' => '5.2', 'xdebug' => '2.2.7',],
@@ -19,16 +20,18 @@ class VersionTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider versionMap
+     * @param $phpVersion
+     * @param $xdebugVersion
      */
-    public function testXdebugVersion($phpVersion, $xdebugVersion)
+    public function testXdebugVersion($phpVersion, $xdebugVersion): void
     {
         $versions = new PhpVersions();
 
         $xdebugInfo = $versions->getXdebugInfo($phpVersion);
-        $this->assertEquals($xdebugVersion, $xdebugInfo['version']);
+        self::assertEquals($xdebugVersion, $xdebugInfo['version']);
     }
 
-    public function testGetVersionWithoutCache()
+    public function testGetVersionWithoutCache(): void
     {
         $this->expectOutputString("Fetching data from php.net\n");
         $flags = PhpVersions::VERBOSITY_NORMAL | PhpVersions::CACHE_DISABLED;

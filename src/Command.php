@@ -29,61 +29,45 @@
 
 namespace GreenCape\PHPVersions;
 
-use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * The version command reports full version of a PHP version.
+ * The base command provides common functionality
  *
- * @package     GreenCape\JoomlaCLI
+ * @package     GreenCape\PHPVersions
  * @subpackage  Command
- * @since       Class available since Release 1.3.0
+ * @since       Class available since Release 1.5.0
  */
-class VersionCommand extends Command
+abstract class Command extends SymfonyCommand
 {
     /**
-     * Configure the options for the version command
-     *
-     * @return  void
+     * @param InputInterface $input
+     * @return int
      */
-    protected function configure()
+    protected function getVerbosity(InputInterface $input): int
     {
-        $this
-            ->setName('version')
-            ->setDescription('Show full version number of a PHP version')
-            ->addArgument(
-                'php',
-                InputOption::VALUE_OPTIONAL,
-                'The PHP version to get the info for. Defaults to \'latest\''
-            );
+        $verbosity = PhpVersions::VERBOSITY_NORMAL;
+        $verbosity = $input->getOption('verbose') === 2 ? PhpVersions::VERBOSITY_VERBOSE : $verbosity;
+        $verbosity = $input->getOption('verbose') === 3 ? PhpVersions::VERBOSITY_DEBUG : $verbosity;
+        $verbosity = $input->getOption('quiet') ? PhpVersions::VERBOSITY_SILENT : $verbosity;
+
+        return $verbosity;
     }
 
     /**
-     * Execute the version command
-     *
-     * @param   InputInterface $input An InputInterface instance
-     * @param   OutputInterface $output An OutputInterface instance
-     *
-     * @return  void
+     * @param InputInterface $input
+     * @return string
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function getVersion(InputInterface $input): string
     {
-        $verbosity = PhpVersions::VERBOSITY_NORMAL;
-        $verbosity = $input->getOption('verbose') == 2 ? PhpVersions::VERBOSITY_VERBOSE : $verbosity;
-        $verbosity = $input->getOption('verbose') == 3 ? PhpVersions::VERBOSITY_DEBUG : $verbosity;
-        $verbosity = $input->getOption('quiet') ? PhpVersions::VERBOSITY_SILENT : $verbosity;
-        $phpVersions = new PhpVersions(null, $verbosity);
-
         $versions = $input->getArgument('php');
         $version = array_shift($versions);
+
         if (empty($version)) {
             $version = 'latest';
         }
 
-        $info = $phpVersions->getInfo($version);
-
-        $output->write($info['version']);
+        return $version;
     }
 }

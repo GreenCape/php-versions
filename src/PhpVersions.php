@@ -26,40 +26,40 @@
  * @license     http://opensource.org/licenses/MIT The MIT license (MIT)
  */
 
-namespace Greencape\PHPVersions;
+namespace GreenCape\PHPVersions;
 
 /**
  * Class PhpVersions
  *
  * A utility class to provide a list of all PHP versions and their matching xDebug version.
  *
- * @package Greencape\PhpVersions
+ * @package GreenCape\PhpVersions
  * @version 1.2.0
  */
 class PhpVersions
 {
-    const VERBOSITY_SILENT = 0;
-    const VERBOSITY_NORMAL = 1;
-    const VERBOSITY_VERBOSE = 2;
-    const VERBOSITY_DEBUG = 3;
-    const VERBOSITY_MASK = 3;
+    public const VERBOSITY_SILENT = 0;
+    public const VERBOSITY_NORMAL = 1;
+    public const VERBOSITY_VERBOSE = 2;
+    public const VERBOSITY_DEBUG = 3;
+    public const VERBOSITY_MASK = 3;
 
-    const CACHE_ENABLED = 0;
-    const CACHE_DISABLED = 4;
-    const CACHE_MASK = 4;
+    public const CACHE_ENABLED = 0;
+    public const CACHE_DISABLED = 4;
+    public const CACHE_MASK = 4;
 
-    private $verbosity = 1;
+    private int $verbosity;
     private $versions = [];
     private $aliases = [];
-    private $cacheFilename = null;
-    private $xDebugVersions = [
+    private ?string $cacheFilename = null;
+    private array $xDebugVersions = [
         '3.0' => ['version' => '1.3.2', 'sha256' => 'f3f9d2e60d1e7a2621f546812195bd164174933252b5752b778450449eb3b9bd'],
         '4.3' => ['version' => '2.0.5', 'sha256' => '4638641e643f4cedd9d2ec360fb13f47221973518b07ec6a2016c967063bb8b2'],
         '5.2' => ['version' => '2.2.7', 'sha256' => '4fce7fc794ccbb1dd0b961191cd0323516e216502fe7209b03711fc621642245'],
         '5.4' => ['version' => '2.4.1', 'sha256' => '23c8786e0f5aae67b1e5035972bfff282710fb84c483887cebceb8ef5bbdf8ef'],
         '5.5' => ['version' => '2.5.3', 'sha256' => '4cce3d495243e92cd2e1d764a33188d60c85f0d2087d94d4203c354ea03530f4'],
     ];
-    private $gpgKeys = [
+    private array $gpgKeys = [
         '5.3' => [
             [
                 'pub' => '0B96 609E 270F 565C 1329  2B24 C13C 70B8 7267 B52D',
@@ -133,7 +133,7 @@ class PhpVersions
     {
         $this->verbosity = ($flags & self::VERBOSITY_MASK);
 
-        if (($flags & self::CACHE_MASK) == self::CACHE_ENABLED) {
+        if (($flags & self::CACHE_MASK) === self::CACHE_ENABLED) {
             if (empty($cache)) {
                 $cache = getenv('HOME') . '/.php_versions';
             }
@@ -143,12 +143,12 @@ class PhpVersions
             if (file_exists($this->cacheFilename)) {
                 $this->out("Reading from cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
 
-                $data = unserialize((file_get_contents($this->cacheFilename)));
+                $data = unserialize(file_get_contents($this->cacheFilename), [false]);
                 $this->versions = $data['versions'];
                 $this->aliases = $data['aliases'];
 
                 if (time() - filemtime($this->cacheFilename) > 3600 * 24 * 7) {
-                    $this->out("Looking for new releases", self::VERBOSITY_NORMAL);
+                    $this->out("Looking for new releases");
 
                     $this->loadFromPhpSite(2);
                 }
@@ -157,33 +157,34 @@ class PhpVersions
             }
         }
 
-        $this->out("Fetching data from php.net", self::VERBOSITY_NORMAL);
+        $this->out("Fetching data from php.net");
 
         $this->loadFromPhpSite(1000);
     }
 
-    private function out($message, $verbosity = self::VERBOSITY_NORMAL)
+    private function out($message, $verbosity = self::VERBOSITY_NORMAL): void
     {
         if ($verbosity <= $this->verbosity) {
             echo "$message\n";
         }
     }
 
-    private function loadFromPhpSite($max = 1)
+    private function loadFromPhpSite($max = 1): void
     {
         $versions = $this->versions;
 
-        foreach ([3, 4, 5, 7] as $major) {
+        foreach ([3, 4, 5, 7, 8] as $major) {
             $url = "http://php.net/releases/index.php?serialize=1&version={$major}";
 
             if ($max > 1) {
                 $url .= '&max=' . $max;
-                $versions = array_merge($versions, unserialize(file_get_contents($url)));
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $versions = array_merge($versions, unserialize(file_get_contents($url), [false]));
 
                 continue;
             }
 
-            $info = unserialize(file_get_contents($url));
+            $info = unserialize(file_get_contents($url), [false]);
             $versions[$info['version']] = $info;
         }
 
@@ -199,10 +200,15 @@ class PhpVersions
         if (!empty($this->cacheFilename)) {
             $this->out("Writing to cache ({$this->cacheFilename})", self::VERBOSITY_VERBOSE);
 
-            file_put_contents($this->cacheFilename, serialize([
-                'versions' => $this->versions,
-                'aliases' => $this->aliases
-            ]));
+            file_put_contents(
+                $this->cacheFilename,
+                serialize(
+                    [
+                        'versions' => $this->versions,
+                        'aliases' => $this->aliases
+                    ]
+                )
+            );
         }
     }
 
@@ -258,18 +264,18 @@ class PhpVersions
      *
      * @return string
      */
-    private function handleAnnouncement($version, $info)
+    private function handleAnnouncement($version, $info): ?string
     {
         if (!isset($info['announcement'])) {
             return null;
         }
 
-        if ($info['announcement'] == 1) {
+        if ($info['announcement'] === 1) {
             return 'http://php.net/releases/' . str_replace('.', '_', $version) . '.php';
         }
 
         if (isset($info['announcement']['English'])) {
-            if ($info['announcement']['English'][0] == '/') {
+            if ($info['announcement']['English'][0] === '/') {
                 return 'http://php.net' . $info['announcement']['English'];
             }
 
@@ -284,9 +290,9 @@ class PhpVersions
      *
      * @return string
      */
-    private function handleDate($info)
+    private function handleDate($info): string
     {
-        return isset($info['date']) ? $info['date'] : $info['source'][0]['date'];
+        return $info['date'] ?? $info['source'][0]['date'];
     }
 
     /**
@@ -294,7 +300,7 @@ class PhpVersions
      *
      * @return array
      */
-    public function getXdebugInfo($version)
+    public function getXdebugInfo($version): array
     {
         $version = $this->resolveVersion($version);
         $xDebug = [];
@@ -329,28 +335,24 @@ class PhpVersions
      *
      * @return array
      */
-    public function getGpgInfo($version)
+    public function getGpgInfo($version): array
     {
         $phpRelease = preg_replace('~^(\d+\.\d+)\.\d+$~', '\1', $this->resolveVersion($version));
 
-        if (!isset($this->gpgKeys[$phpRelease])) {
-            return [];
-        }
-
-        return $this->gpgKeys[$phpRelease];
+        return $this->gpgKeys[$phpRelease] ?? [];
     }
 
     /**
      * @return array
      */
-    private function getAliases()
+    private function getAliases(): array
     {
         $versions = $this->versions;
 
         if (empty($this->aliases)) {
             foreach (array_keys($versions) as $version) {
                 /** @noinspection PhpUnusedLocalVariableInspection */
-                list($major, $minor, $patch) = explode('.', $version);
+                [$major, $minor, $patch] = explode('.', $version);
 
                 $this->updateAlias('latest', $version);
                 $this->updateAlias($major, $version);
@@ -365,7 +367,7 @@ class PhpVersions
      * @param $index
      * @param $version
      */
-    private function updateAlias($index, $version)
+    private function updateAlias($index, $version): void
     {
         if (!isset($this->aliases[$index]) || version_compare($version, $this->aliases[$index], 'gt')) {
             $this->aliases[$index] = $version;
@@ -378,7 +380,7 @@ class PhpVersions
      * The original data from the PHP site contain a wrong filename for
      * the xz compressed source of 5.5.37.
      */
-    private function fixFilenameBug()
+    private function fixFilenameBug(): void
     {
         if (!isset($this->versions['5.5.37'])) {
             return;
@@ -401,7 +403,7 @@ class PhpVersions
      *
      * @return array All matching version numbers.
      */
-    public function getVersions($pattern = null)
+    public function getVersions($pattern = null): array
     {
         $versions = array_keys($this->versions);
 
@@ -409,7 +411,7 @@ class PhpVersions
             return $versions;
         }
 
-        $pattern = preg_replace('~\.~', '\\.', $pattern);
+        $pattern = str_replace(".", '\\.', $pattern);
         $pattern = preg_replace('~[xyz]+~i', '\\d+', $pattern);
 
         $result = [];
@@ -435,7 +437,7 @@ class PhpVersions
      * @return array The download information.
      * @throws \Exception if no download information is found.
      */
-    public function getSourceInfo($version = 'latest', $ext = null)
+    public function getSourceInfo($version = 'latest', $ext = null): array
     {
         $info = $this->getInfo($version);
 
@@ -443,13 +445,14 @@ class PhpVersions
             return $info['source'][$ext];
         }
 
+        /** @noinspection SuspiciousLoopInspection */
         foreach (['xz', 'bz2', 'gz'] as $ext) {
             if (isset($info['source'][$ext])) {
                 return $info['source'][$ext];
             }
         }
 
-        throw new \Exception("No source information for version $version.");
+        throw new \RuntimeException("No source information for version $version.");
     }
 
     /**
@@ -463,12 +466,12 @@ class PhpVersions
      * @return array The information about the version.
      * @throws \Exception if `version` is unknown.
      */
-    public function getInfo($version = 'latest')
+    public function getInfo($version = 'latest'): array
     {
         $version = $this->resolveVersion($version);
 
         if (!isset($this->versions[$version])) {
-            throw new \Exception("No information for version $version.");
+            throw new \RuntimeException("No information for version $version.");
         }
 
         return $this->versions[$version];
