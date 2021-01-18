@@ -99,4 +99,14 @@ class Application extends BaseApplication
             return 1;
         }
     }
+
+    /**
+     * Returns the long version of the application.
+     *
+     * @return string The long application version
+     */
+    public function getLongVersion(): string
+    {
+        return parent::getLongVersion() . ' by Niels Braczek';
+    }
 }

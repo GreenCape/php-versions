@@ -119,53 +119,67 @@ This will output
 ```
 Array
 (
-    [version] => 7.1.0
+    [version] => 8.0.1
     [aliases] => Array
         (
             [0] => latest
-            [1] => 7
-            [2] => 7.1
+            [1] => 8
+            [2] => 8.0
         )
-    [announcement] => http://php.net/releases/7_1_0.php
-    [date] => 2016-12-01
+
+    [announcement] => 1
+    [date] => 2021-01-07
     [source] => Array
         (
-            [bz2] => Array
-                (
-                    [filename] => php-7.1.0.tar.bz2
-                    [name] => PHP 7.1.0 (tar.bz2)
-                    [md5] => 54e364b60a88db77adb96aacb10f10a4
-                    [sha256] => 68bcfd7deed5b3474d81dec9f74d122058327e2bed0ac25bbc9ec70995228e61
-                )
             [gz] => Array
                 (
-                    [filename] => php-7.1.0.tar.gz
-                    [name] => PHP 7.1.0 (tar.gz)
-                    [md5] => ec2218f97b4edbc35a2d7919ff37a662
-                    [sha256] => 9e84c5b13005c56374730edf534fe216f6a2e63792a9703d4b894e770bbccbae
+                    [filename] => php-8.0.1.tar.gz
+                    [name] => PHP 8.0.1 (tar.gz)
+                    [sha256] => f1fee0429aa2cce6bc5df5d7e65386e266b0aab8a5fad7882d10eb833d2f5376
+                    [md5] => 
                 )
+
+            [bz2] => Array
+                (
+                    [filename] => php-8.0.1.tar.bz2
+                    [name] => PHP 8.0.1 (tar.bz2)
+                    [sha256] => c44e76af40d133de64564f9caf5daec52bbe84c1ccb4e4500a62233d614ebdee
+                    [md5] => 
+                )
+
             [xz] => Array
                 (
-                    [filename] => php-7.1.0.tar.xz
-                    [name] => PHP 7.1.0 (tar.xz)
-                    [md5] => cf36039303c47f493100afea522a8f53
-                    [sha256] => a810b3f29c21407c24caa88f50649320d20ba6892ae1923132598b8a0ca145b6
+                    [filename] => php-8.0.1.tar.xz
+                    [name] => PHP 8.0.1 (tar.xz)
+                    [sha256] => 208b3330af881b44a6a8c6858d569c72db78dab97810332978cc65206b0ec2dc
+                    [md5] => 
                 )
+
         )
+
     [museum] => 
     [xdebug] => Array
         (
-            [version] => 2.4.1
-            [sha1] => 52b5cede5dcb815de469d671bfdc626aec8adee3
+            [version] => 3.0.2
+            [sha256] => 096d46dec061341868d3e3933b977013a592e2e88992b2c0aba7fa52f87c4e17
         )
+
     [gpg] => Array
         (
             [0] => Array
                 (
-                    [pub] => A917 B1EC DA84 AEC2 B568 FED6 F50A BC80 7BD5 DCD0
-                    [uid] => Davey Shafik <davey@php.net>
+                    [pub] => 1729 F839 38DA 44E2 7BA0  F4D3 DBDB 3974 70D1 2172
+                    [uid] => Sara Golemon <pollita@php.net>
                 )
+
+            [1] => Array
+                (
+                    [pub] => BFDD D286 4282 4F81 18EF  7790 9B67 A5C1 2229 118F
+                    [uid] => Gabriel Caruso (Release Manager) <carusogabriel@php.net>
+                )
+
         )
+
 )
 ```
 
@@ -179,7 +193,7 @@ Array
 $versions = new GreenCape\PhpVersions();
 
 $info = $versions->getInfo();
-echo $info['version']; // 7.1.0
+echo $info['version']; // 8.0.1
 ```
 
 **Get the latest release of the 5.5 branch**
