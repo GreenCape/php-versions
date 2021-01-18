@@ -52,13 +52,32 @@ class PhpVersions
     private array $versions = [];
     private array $aliases = [];
     private ?string $cacheFilename = null;
+
+    /**
+     * PHP - XDebug version map
+     *
+     * SHA256 values for XDebug are found at https://xdebug.org/download/historical (hover over 'Source' button)
+     *
+     * @var array|\string[][]
+     */
     private array $xDebugVersions = [
         '3.0' => ['version' => '1.3.2', 'sha256' => 'f3f9d2e60d1e7a2621f546812195bd164174933252b5752b778450449eb3b9bd'],
         '4.3' => ['version' => '2.0.5', 'sha256' => '4638641e643f4cedd9d2ec360fb13f47221973518b07ec6a2016c967063bb8b2'],
         '5.2' => ['version' => '2.2.7', 'sha256' => '4fce7fc794ccbb1dd0b961191cd0323516e216502fe7209b03711fc621642245'],
         '5.4' => ['version' => '2.4.1', 'sha256' => '23c8786e0f5aae67b1e5035972bfff282710fb84c483887cebceb8ef5bbdf8ef'],
-        '5.5' => ['version' => '2.5.3', 'sha256' => '4cce3d495243e92cd2e1d764a33188d60c85f0d2087d94d4203c354ea03530f4'],
+        '5.5' => ['version' => '2.5.5', 'sha256' => '72108bf2bc514ee7198e10466a0fedcac3df9bbc5bd26ce2ec2dafab990bf1a4'],
+        '7.0' => ['version' => '2.7.2', 'sha256' => 'b0f3283aa185c23fcd0137c3aaa58554d330995ef7a3421e983e8d018b05a4a6'],
+        '7.1' => ['version' => '2.9.8', 'sha256' => 'f555b6cc58d96c9965af942d22e0f1818b7a477a410c76b1ab0eebe85a762f8a'],
+        '7.2' => ['version' => '3.0.2', 'sha256' => '096d46dec061341868d3e3933b977013a592e2e88992b2c0aba7fa52f87c4e17'],
     ];
+
+    /**
+     * PHP GPG keys
+     *
+     * Keys are found on https://www.php.net/gpg-keys.php
+     *
+     * @var array|\string[][][]
+     */
     private array $gpgKeys = [
         '5.3' => [
             [
@@ -84,6 +103,10 @@ class PhpVersions
             [
                 'pub' => '0B96 609E 270F 565C 1329  2B24 C13C 70B8 7267 B52D',
                 'uid' => 'David Soria Parra <dsp@php.net>'
+            ],
+            [
+                'pub' => 'F382 5282 6ACD 957E F380  D39F 2F79 56BC 5DA0 4B5D',
+                'uid' => 'Stanislav Malyshev (PHP key) <stas@php.net>'
             ],
         ],
         '5.6' => [
@@ -114,6 +137,54 @@ class PhpVersions
             [
                 'pub' => '5289 95BF EDFB A719 1D46  839E F9BA 0ADA 31CB D89E',
                 'uid' => 'Joe Watkins <krakjoe@php.net>'
+            ],
+            [
+                'pub' => '1729 F839 38DA 44E2 7BA0  F4D3 DBDB 3974 70D1 2172',
+                'uid' => 'Sara Golemon <pollita@php.net>'
+            ],
+        ],
+        '7.2' => [
+            [
+                'pub' => '1729 F839 38DA 44E2 7BA0  F4D3 DBDB 3974 70D1 2172',
+                'uid' => 'Sara Golemon <pollita@php.net>'
+            ],
+            [
+                'pub' => 'B1B4 4D8F 021E 4E2D 6021  E995 DC9F F8D3 EE5A F27F',
+                'uid' => 'Remi Collet <remi@php.net>'
+            ],
+            [
+                'pub' => 'CBAF 69F1 73A0 FEA4 B537  F470 D66C 9593 118B CCB6',
+                'uid' => 'Christoph M. Becker <cmb@php.net>'
+            ],
+        ],
+        '7.3' => [
+            [
+                'pub' => 'CBAF 69F1 73A0 FEA4 B537  F470 D66C 9593 118B CCB6',
+                'uid' => 'Christoph M. Becker <cmb@php.net>'
+            ],
+            [
+                'pub' => 'F382 5282 6ACD 957E F380  D39F 2F79 56BC 5DA0 4B5D',
+                'uid' => 'Stanislav Malyshev (PHP key) <stas@php.net>'
+            ],
+        ],
+        '7.4' => [
+            [
+                'sec' => '5A52880781F755608BF815FC910DEB46F53EA312',
+                'uid' => 'Derick Rethans (PHP) <derick@php.net>'
+            ],
+            [
+                'pub' => '4267 0A7F E4D0 441C 8E46  3234 9E4F DC07 4A4E F02D',
+                'uid' => 'Peter Kokot <petk@php.net>'
+            ],
+        ],
+        '8.0' => [
+            [
+                'pub' => '1729 F839 38DA 44E2 7BA0  F4D3 DBDB 3974 70D1 2172',
+                'uid' => 'Sara Golemon <pollita@php.net>'
+            ],
+            [
+                'pub' => 'BFDD D286 4282 4F81 18EF  7790 9B67 A5C1 2229 118F',
+                'uid' => 'Gabriel Caruso (Release Manager) <carusogabriel@php.net>'
             ],
         ],
     ];
