@@ -48,7 +48,7 @@ class Application extends BaseApplication
      */
     public function __construct()
     {
-        parent::__construct('PHP Versions', '1.3.0');
+        parent::__construct('PHP Versions', '1.4.1');
         $this->setCatchExceptions(false);
         $this->addPlugins(__DIR__ . '/Commands');
     }
