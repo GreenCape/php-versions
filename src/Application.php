@@ -80,21 +80,15 @@ class Application extends BaseApplication
      */
     public function run(InputInterface $input = null, OutputInterface $output = null): int
     {
-        try {
-            parent::run($input, $output);
+        if (null === $output) {
+            $output = new ConsoleOutput();
+        }
 
-            return 0;
+        try {
+            return parent::run($input, $output);
         } catch (\Exception $e) {
-            if (null === $output) {
-                $output = new ConsoleOutput();
-            }
-            $message = array(
-                $this->getLongVersion(),
-                '',
-                $e->getMessage(),
-                ''
-            );
-            $output->writeln($message);
+            $output->writeln($this->getLongVersion() . "\n");
+            $output->writeln($e->getMessage());
 
             return 1;
         }

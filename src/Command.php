@@ -52,7 +52,10 @@ abstract class Command extends SymfonyCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        // @codeCoverageIgnoreStart
         throw new LogicException('You must override the execute() method in the concrete command class.');
+
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -61,12 +64,23 @@ abstract class Command extends SymfonyCommand
      */
     protected function getVerbosity(InputInterface $input): int
     {
-        $verbosity = PhpVersions::VERBOSITY_NORMAL;
-        $verbosity = $input->getOption('verbose') === 2 ? PhpVersions::VERBOSITY_VERBOSE : $verbosity;
-        $verbosity = $input->getOption('verbose') === 3 ? PhpVersions::VERBOSITY_DEBUG : $verbosity;
-        $verbosity = $input->getOption('quiet') ? PhpVersions::VERBOSITY_SILENT : $verbosity;
+        if ($input->hasParameterOption(['--quiet', '-q'], true)) {
+            return PhpVersions::VERBOSITY_SILENT;
+        }
 
-        return $verbosity;
+        if ($input->hasParameterOption('-vvv', true)
+            || $input->hasParameterOption('--verbose=3', true)
+            || 3 === $input->getParameterOption('--verbose', false, true)) {
+            return PhpVersions::VERBOSITY_DEBUG;
+        }
+
+        if ($input->hasParameterOption('-vv', true)
+            || $input->hasParameterOption('--verbose=2', true)
+            || 2 === $input->getParameterOption('--verbose', false, true)) {
+            return PhpVersions::VERBOSITY_VERBOSE;
+        }
+
+        return PhpVersions::VERBOSITY_NORMAL;
     }
 
     /**

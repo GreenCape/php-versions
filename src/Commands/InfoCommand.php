@@ -79,22 +79,28 @@ class InfoCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
-        $phpVersions = new PhpVersions(null, $verbosity);
-        $version = $this->getVersion($input);
 
-        $info = $phpVersions->getInfo($version);
+        try {
+            ob_start();
+            $phpVersions = new PhpVersions(null, $verbosity);
+            $version = $this->getVersion($input);
 
-        $format = $input->getOption('format');
-        if (empty($format)) {
-            $format = 'dump';
-        }
+            $info = $phpVersions->getInfo($version);
 
-        if ($format === 'json') {
-            $result = json_encode($info, JSON_THROW_ON_ERROR);
-        } elseif ($format === 'dump') {
-            $result = print_r($info, true);
-        } else {
-            throw new \RuntimeException("Format '$format' is currently not supported.'");
+            $format = $input->getOption('format');
+            if (empty($format)) {
+                $format = 'dump';
+            }
+
+            if ($format === 'json') {
+                $result = json_encode($info, JSON_THROW_ON_ERROR);
+            } elseif ($format === 'dump') {
+                $result = print_r($info, true);
+            } else {
+                throw new \RuntimeException("Format '$format' is currently not supported.'");
+            }
+        } finally {
+            $output->write(ob_get_clean());
         }
 
         $output->writeln($result);

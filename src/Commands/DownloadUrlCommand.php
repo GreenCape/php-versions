@@ -88,30 +88,36 @@ class DownloadUrlCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
-        $phpVersions = new PhpVersions(null, $verbosity);
-        $version = $this->getVersion($input);
 
-        $format = $input->getOption('format');
-        if (empty($format)) {
-            $format = null;
-        }
+        try {
+            ob_start();
+            $phpVersions = new PhpVersions(null, $verbosity);
+            $version = $this->getVersion($input);
 
-        $info = $phpVersions->getSourceInfo($version, $format);
-
-        $filename = $info['filename'];
-        if ($input->getOption('asc')) {
-            $filename .= '.asc';
-        }
-
-        $result = $filename;
-        if ($input->getOption('url')) {
-            $result = "https://secure.php.net/get/$filename/from/this/mirror";
-            $info = $phpVersions->getInfo($version);
-            if ($info['museum']) {
-                $result = "http://museum.php.net/php5/$filename";
+            $format = $input->getOption('format');
+            if (empty($format)) {
+                $format = null;
             }
-        }
 
+            $info = $phpVersions->getSourceInfo($version, $format);
+
+            $filename = $info['filename'];
+            if ($input->getOption('asc')) {
+                $filename .= '.asc';
+            }
+
+            $result = $filename;
+            if ($input->getOption('url')) {
+                $result = "https://secure.php.net/get/$filename/from/this/mirror";
+                $info = $phpVersions->getInfo($version);
+                if ($info['museum']) {
+                    [$major] = explode('.', $version);
+                    $result = "http://museum.php.net/php$major/$filename";
+                }
+            }
+        } finally {
+            $output->write(ob_get_clean());
+        }
         $output->write($result);
 
         return 0;

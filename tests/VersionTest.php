@@ -1,46 +1,31 @@
 <?php
 
-use GreenCape\PHPVersions\PhpVersions;
+use GreenCape\PHPVersions\Commands\VersionCommand;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 class VersionTest extends TestCase
 {
-    public function versionMap(): array
+    public function testMajor()
     {
-        return [
-            ['php' => '5.2', 'xdebug' => '2.2.7',],
-            ['php' => '5.3', 'xdebug' => '2.2.7',],
-            ['php' => '5.4', 'xdebug' => '2.4.1',],
-            ['php' => '5.5', 'xdebug' => '2.5.5',],
-            ['php' => '5.6', 'xdebug' => '2.5.5',],
-            ['php' => '7.0', 'xdebug' => '2.7.2',],
-            ['php' => '7.1', 'xdebug' => '2.9.8',],
-            ['php' => '7.2', 'xdebug' => '3.0.2',],
-            ['php' => '7.3', 'xdebug' => '3.0.2',],
-            ['php' => '7.4', 'xdebug' => '3.0.2',],
-            ['php' => '8.0', 'xdebug' => '3.0.2',],
-        ];
+        $command = new VersionCommand();
+        $input = new StringInput('7');
+        $output = new BufferedOutput();
+
+        $command->run($input, $output);
+
+        self::assertEquals('7.4.14', $output->fetch());
     }
 
-    /**
-     * @dataProvider versionMap
-     * @param $phpVersion
-     * @param $xdebugVersion
-     */
-    public function testXdebugVersion($phpVersion, $xdebugVersion): void
+    public function testMinor()
     {
-        $versions = new PhpVersions();
+        $command = new VersionCommand();
+        $input = new StringInput('7.4');
+        $output = new BufferedOutput();
 
-        $xdebugInfo = $versions->getXdebugInfo($phpVersion);
-        self::assertEquals($xdebugVersion, $xdebugInfo['version']);
-    }
+        $command->run($input, $output);
 
-    public function testGetVersionWithoutCache(): void
-    {
-        $this->expectOutputString("Fetching data from php.net\n");
-        $flags = PhpVersions::VERBOSITY_NORMAL | PhpVersions::CACHE_DISABLED;
-        $versions = new PhpVersions(null, $flags);
-
-        $versions->getVersions('4');
+        self::assertEquals('7.4.14', $output->fetch());
     }
 }

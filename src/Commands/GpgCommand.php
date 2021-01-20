@@ -53,7 +53,7 @@ class GpgCommand extends Command
     {
         $this
             ->setName('gpg')
-            ->setDescription('Get the GPG key for a PHP version')
+            ->setDescription('Get the GPG keys for a PHP version')
             ->addArgument(
                 'php',
                 InputOption::VALUE_OPTIONAL,
@@ -72,12 +72,20 @@ class GpgCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
-        $phpVersions = new PhpVersions(null, $verbosity);
-        $version = $this->getVersion($input);
 
-        $gpgKeys = [];
-        foreach ($phpVersions->getGpgInfo($version) as $key) {
-            $gpgKeys[] = str_replace(' ', '', $key['pub']);
+        try {
+            ob_start();
+            $phpVersions = new PhpVersions(null, $verbosity);
+            $version = $this->getVersion($input);
+
+            $gpgKeys = [];
+            foreach ($phpVersions->getGpgInfo($version) as $key) {
+                $gpgKeys[] = str_replace(' ', '', $key['pub'] ?? '');
+            }
+
+            $gpgKeys = array_filter($gpgKeys);
+        } finally {
+            $output->write(ob_get_clean());
         }
 
         $output->write(implode(' ', $gpgKeys));

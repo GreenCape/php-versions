@@ -73,10 +73,16 @@ class VersionCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
-        $phpVersions = new PhpVersions(null, $verbosity);
-        $version = $this->getVersion($input);
 
-        $info = $phpVersions->getInfo($version);
+        try {
+            ob_start();
+            $phpVersions = new PhpVersions(null, $verbosity);
+            $version = $this->getVersion($input);
+
+            $info = $phpVersions->getInfo($version);
+        } finally {
+            $output->write(ob_get_clean());
+        }
 
         $output->write($info['version']);
 

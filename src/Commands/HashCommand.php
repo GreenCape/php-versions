@@ -83,20 +83,26 @@ class HashCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $verbosity = $this->getVerbosity($input);
-        $phpVersions = new PhpVersions(null, $verbosity);
-        $version = $this->getVersion($input);
 
-        $type = $input->getOption('type');
-        if (empty($type)) {
-            $type = 'sha256';
+        try {
+            ob_start();
+            $phpVersions = new PhpVersions(null, $verbosity);
+            $version = $this->getVersion($input);
+
+            $type = $input->getOption('type');
+            if (empty($type)) {
+                $type = 'sha256';
+            }
+
+            $format = $input->getOption('format');
+            if (empty($format)) {
+                $format = null;
+            }
+
+            $info = $phpVersions->getSourceInfo($version, $format);
+        } finally {
+            $output->write(ob_get_clean());
         }
-
-        $format = $input->getOption('format');
-        if (empty($format)) {
-            $format = null;
-        }
-
-        $info = $phpVersions->getSourceInfo($version, $format);
 
         $output->write($info[$type] ?? '');
 
